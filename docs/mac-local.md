@@ -3,7 +3,7 @@ title: Local Mac (M5 Pro 48 GB)
 nav_order: 2
 ---
 
-# Local: MacBook M5 Pro, 48 GB unified memory
+{% include grain_hero.html title="Local Mac" sub="M5 Pro · 48 GB unified memory · MLX" height=150 %}
 
 The main workbench. Fast iteration, and no cloud bill for experiments. Move to a cloud GPU only for long runs or anything >~14B that needs many steps.
 

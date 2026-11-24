@@ -3,7 +3,7 @@ title: Tinkering (modify models)
 nav_order: 3
 ---
 
-# Tinkering: modifying models by hand
+{% include grain_hero.html title="Tinkering" sub="Change models by hand, check by reading" height=150 %}
 
 The goal here is to **get a feel for changing models**, not to benchmark them. Keep the checks lightweight: a fixed list of ~20 prompts you read yourself, plus a diff against the previous version.
 

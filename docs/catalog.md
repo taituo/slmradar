@@ -3,7 +3,7 @@ title: Catalog
 nav_order: 4
 ---
 
-# Catalog
+{% include grain_hero.html title="Catalog" sub="Generated from models.yml" height=150 %}
 
 Generated from [`docs/_data/models.yml`](https://github.com/taituo/slmradar/blob/main/docs/_data/models.yml). Edit the YAML, not this page.
 

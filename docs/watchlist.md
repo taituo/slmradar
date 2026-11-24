@@ -3,7 +3,7 @@ title: Watchlist
 nav_order: 9
 ---
 
-# Watchlist
+{% include grain_hero.html title="Watchlist" sub="Unverified claims and license caution" height=150 %}
 
 Generated from [`docs/_data/watchlist.yml`](https://github.com/taituo/slmradar/blob/main/docs/_data/watchlist.yml).
 

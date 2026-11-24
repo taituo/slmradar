@@ -1,0 +1,4 @@
+<div class="grain-hero">
+  <canvas class="grain" style="height: {{ include.height | default: 160 }}px"></canvas>
+  {% if include.title %}<div class="grain-text"><h1>{{ include.title }}</h1>{% if include.sub %}<p>{{ include.sub }}</p>{% endif %}</div>{% endif %}
+</div>

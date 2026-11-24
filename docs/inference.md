@@ -3,7 +3,7 @@ title: Inference
 nav_order: 7
 ---
 
-# Inference stack
+{% include grain_hero.html title="Inference stack" sub="Serving options" height=150 %}
 
 | Engine | Use when |
 |---|---|

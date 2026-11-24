@@ -3,7 +3,7 @@ title: Licensing
 nav_order: 8
 ---
 
-# Licensing
+{% include grain_hero.html title="Licensing" sub="Weights vs. training data" height=150 %}
 
 Two separate questions:
 

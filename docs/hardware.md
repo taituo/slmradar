@@ -3,7 +3,7 @@ title: Hardware (NVIDIA / cloud)
 nav_order: 5
 ---
 
-# Hardware
+{% include grain_hero.html title="Hardware" sub="12–32 GB cards and cloud GPUs" height=150 %}
 
 Planning estimates for **adapter training at seq 2–4K, batch 1, gradient checkpointing** (Unsloth/TRL-style). Long context, bigger batches and RL rollouts all need more. Measure before buying.
 

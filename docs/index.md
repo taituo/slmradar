@@ -3,7 +3,7 @@ title: Home
 nav_order: 1
 ---
 
-# slmradar
+{% include grain_hero.html title="slmradar" sub="Open-weight 3B–35B models to tune and modify — Mac first, then NVIDIA and cloud" height=300 %}
 
 A maintained radar of **open-weight models in the 3B–35B range** that are realistic to **tune and modify yourself**. The focus is the hands-on experience of changing models, not benchmarking.
 
@@ -31,6 +31,8 @@ Where it runs, in priority order:
 | [Inference](inference.html) | Serving stack options |
 | [Licensing](licensing.html) | Weight licenses vs. teacher-data restrictions |
 | [Watchlist](watchlist.html) | Unverified claims and license-caution families |
+
+<canvas class="grain divider"></canvas>
 
 ## Current shortlist (2026-11-24)
 
