@@ -1,0 +1,409 @@
+# slmradar model catalog — single source of truth.
+# Scope: open-weight models, ~3B–35B, trainable in the cloud or on 12–32 GB NVIDIA cards.
+#
+# Fields
+#   status:     verified   = official repo/announcement checked for license + size
+#               partial    = official repo exists, some fields not yet confirmed
+#               unverified = only secondhand claims, do not build on it yet
+#   arch:       dense | moe | looped (layer-reuse) | hybrid
+#   vram_*:     rough GB estimates (see docs/hardware.md). null = not estimated.
+#               qlora  = 4-bit base + LoRA, seq ~2-4K, batch 1, grad checkpointing
+#               lora   = bf16 base + LoRA, same settings
+#               infer  = 4-bit inference incl. modest KV cache
+#   checked:    date this entry was last checked against sources
+
+- id: nanbeige4.2-3b
+  name: Nanbeige4.2-3B
+  publisher: Nanbeige LLM Lab (BOSS Zhipin)
+  hf: https://huggingface.co/Nanbeige/Nanbeige4.2-3B
+  base: https://huggingface.co/Nanbeige/Nanbeige4.2-3B-Base
+  params_total: 4
+  params_active: 3
+  arch: looped
+  modalities: text
+  context: 262K
+  license: Apache-2.0
+  released: 2026-07
+  vram_qlora: 8
+  vram_lora: 14
+  vram_infer: 4
+  tags: [agentic, reasoning, small]
+  notes: "3B non-embedding. Looped transformer (22 layers run twice per token). Needs trust_remote_code."
+  status: verified
+  checked: 2026-11-24
+  sources:
+    - https://huggingface.co/papers/2607.22083
+
+- id: ministral-3-3b
+  name: Ministral 3 3B
+  publisher: Mistral AI
+  hf: https://huggingface.co/collections/mistralai/ministral-3
+  params_total: 3
+  arch: dense
+  modalities: text+image
+  context: 256K
+  license: Apache-2.0
+  released: 2025-12
+  vram_qlora: 7
+  vram_lora: 12
+  vram_infer: 3
+  tags: [small, edge, base-available]
+  notes: "Base, Instruct and Reasoning variants."
+  status: verified
+  checked: 2026-11-24
+  sources:
+    - https://mistral.ai/news/mistral-3
+
+- id: qwen3.5-4b
+  name: Qwen3.5-4B
+  publisher: Alibaba Qwen
+  hf: https://huggingface.co/Qwen/Qwen3.5-4B
+  params_total: 4
+  arch: hybrid
+  modalities: text+image
+  context: 262K
+  license: Apache-2.0
+  released: 2026-03
+  vram_qlora: 8
+  vram_lora: 14
+  vram_infer: 3
+  tags: [small, control-model]
+  notes: "Gated DeltaNet + attention hybrid. Good control model for small experiments."
+  status: verified
+  checked: 2026-11-24
+  sources:
+    - https://artificialanalysis.ai/articles/qwen3-5-small-models
+
+- id: gemma-4-e4b
+  name: Gemma 4 E4B
+  publisher: Google DeepMind
+  hf: https://huggingface.co/google
+  params_total: 4
+  arch: dense
+  modalities: text+image+audio
+  license: Apache-2.0
+  released: 2026-04
+  vram_qlora: 8
+  vram_lora: 14
+  vram_infer: 4
+  tags: [edge, audio]
+  notes: "'Effective 4B'. Native audio input."
+  status: partial
+  checked: 2026-11-24
+  sources:
+    - https://blog.google/innovation-and-ai/technology/developers-tools/gemma-4/
+
+- id: olmo-3-7b
+  name: OLMo 3 7B
+  publisher: Ai2
+  hf: https://huggingface.co/allenai/Olmo-3-1025-7B
+  params_total: 7
+  arch: dense
+  modalities: text
+  context: 65K
+  license: Apache-2.0
+  released: 2025-11
+  vram_qlora: 10
+  vram_lora: 20
+  vram_infer: 5
+  tags: [fully-open, research, intermediate-checkpoints]
+  notes: "Training data, code and intermediate checkpoints released. Best pick for mechanistic / weight-editing research."
+  status: verified
+  checked: 2026-11-24
+  sources:
+    - https://thenewstack.io/ai2s-olmo-3-pushes-the-envelope-for-open-source-llm-performance/
+
+- id: ministral-3-8b
+  name: Ministral 3 8B
+  publisher: Mistral AI
+  hf: https://huggingface.co/mistralai/Ministral-3-8B-Instruct-2512
+  base: https://huggingface.co/mistralai/Ministral-3-8B-Base-2512
+  params_total: 8
+  arch: dense
+  modalities: text+image
+  context: 256K
+  license: Apache-2.0
+  released: 2025-12
+  vram_qlora: 11
+  vram_lora: 22
+  vram_infer: 6
+  tags: [base-available]
+  status: verified
+  checked: 2026-11-24
+  sources:
+    - https://docs.mistral.ai/models/ministral-3-8b-25-12.md
+
+- id: qwen3.5-9b
+  name: Qwen3.5-9B
+  publisher: Alibaba Qwen
+  hf: https://huggingface.co/Qwen/Qwen3.5-9B
+  base: https://huggingface.co/Qwen/Qwen3.5-9B-Base
+  params_total: 9
+  arch: hybrid
+  modalities: text+image
+  context: 262K
+  license: Apache-2.0
+  released: 2026-03
+  vram_qlora: 12
+  vram_lora: 24
+  vram_infer: 6
+  tags: [specialist, base-available]
+  notes: "Default 'cheap specialist' candidate."
+  status: verified
+  checked: 2026-11-24
+  sources:
+    - https://huggingface.co/Qwen/Qwen3.5-9B
+
+- id: ministral-3-14b
+  name: Ministral 3 14B
+  publisher: Mistral AI
+  hf: https://huggingface.co/mistralai/Ministral-3-14B-Instruct-2512
+  params_total: 14
+  arch: dense
+  modalities: text+image
+  context: 256K
+  license: Apache-2.0
+  released: 2025-12
+  vram_qlora: 16
+  vram_lora: 34
+  vram_infer: 9
+  tags: [base-available]
+  status: verified
+  checked: 2026-11-24
+  sources:
+    - https://huggingface.co/collections/mistralai/ministral-3
+
+- id: phi-4-reasoning-plus
+  name: Phi-4-reasoning-plus
+  publisher: Microsoft
+  hf: https://huggingface.co/microsoft/Phi-4-reasoning-plus
+  params_total: 14.7
+  arch: dense
+  modalities: text
+  context: 32K
+  license: MIT
+  released: 2025-04
+  vram_qlora: 16
+  vram_lora: 34
+  vram_infer: 9
+  tags: [reasoning]
+  notes: "Older; short context. Kept as MIT-licensed baseline."
+  status: partial
+  checked: 2026-11-24
+  sources: []
+
+- id: gpt-oss-20b
+  name: gpt-oss-20b
+  publisher: OpenAI
+  hf: https://huggingface.co/openai/gpt-oss-20b
+  params_total: 21
+  params_active: 3.6
+  arch: moe
+  modalities: text
+  context: 128K
+  license: Apache-2.0
+  released: 2025-08
+  vram_qlora: 16
+  vram_lora: null
+  vram_infer: 14
+  tags: [reasoning, tool-use]
+  notes: "Ships MXFP4 weights. Check your trainer's MXFP4/MoE support."
+  status: partial
+  checked: 2026-11-24
+  sources: []
+
+- id: gemma-4-26b-a4b
+  name: Gemma 4 26B-A4B
+  publisher: Google DeepMind
+  hf: https://huggingface.co/google
+  params_total: 26
+  params_active: 3.8
+  arch: moe
+  modalities: text+image
+  license: Apache-2.0
+  released: 2026-04
+  vram_qlora: 22
+  vram_lora: null
+  vram_infer: 16
+  tags: [fast-inference]
+  status: partial
+  checked: 2026-11-24
+  sources:
+    - https://blog.google/innovation-and-ai/technology/developers-tools/gemma-4/
+
+- id: qwen3.5-27b
+  name: Qwen3.5-27B
+  publisher: Alibaba Qwen
+  hf: https://huggingface.co/Qwen/Qwen3.5-27B
+  params_total: 27
+  arch: hybrid
+  modalities: text+image
+  context: 262K
+  license: Apache-2.0
+  released: 2026-02
+  vram_qlora: 24
+  vram_lora: null
+  vram_infer: 17
+  tags: [superseded]
+  notes: "Superseded by Qwen3.6/3.8-27B; keep for base-model work if needed."
+  status: verified
+  checked: 2026-11-24
+  sources:
+    - https://rits.shanghai.nyu.edu/ai/qwen-3-5-medium-series-frontier-ai-that-fits-on-your-gpu/
+
+- id: qwen3.6-27b
+  name: Qwen3.6-27B
+  publisher: Alibaba Qwen
+  hf: https://huggingface.co/Qwen/Qwen3.6-27B
+  params_total: 27
+  arch: hybrid
+  modalities: text+image+video
+  context: 262K
+  license: Apache-2.0
+  released: 2026-04
+  vram_qlora: 24
+  vram_lora: null
+  vram_infer: 17
+  tags: [coding, agentic]
+  status: verified
+  checked: 2026-11-24
+  sources:
+    - https://rits.shanghai.nyu.edu/ai/qwen3-6-27b-a-dense-27b-model-that-beats-a-397b-moe-on-coding
+
+- id: qwen3.8-27b
+  name: Qwen3.8-27B
+  publisher: Alibaba Qwen
+  hf: https://huggingface.co/Qwen/Qwen3.8-27B
+  params_total: 27
+  arch: hybrid
+  modalities: text+image+video
+  context: 262K
+  license: Apache-2.0 (confirm on card)
+  vram_qlora: 24
+  vram_lora: null
+  vram_infer: 17
+  tags: [coding, agentic, teacher]
+  notes: "Official repo exists. Release date and license not yet confirmed from first-party source."
+  status: partial
+  checked: 2026-11-24
+  sources:
+    - https://huggingface.co/Qwen/Qwen3.8-27B
+
+- id: muse-glimmer-30b
+  name: Muse Glimmer 30B
+  publisher: Meta Superintelligence Labs
+  hf: https://huggingface.co/meta-models/Muse-Glimmer-30B
+  params_total: 30
+  arch: dense
+  modalities: text+image
+  context: 128K
+  license: Apache-2.0
+  released: 2026-08
+  vram_qlora: 26
+  vram_lora: null
+  vram_infer: 20
+  tags: [agentic, local-first]
+  notes: "First Meta open-weights model under Apache 2.0 (not Llama license). Includes ~1.8B vision encoder. Verify exact HF repo id."
+  status: verified
+  checked: 2026-11-24
+  sources:
+    - https://venturebeat.com/technology/meta-returns-to-open-source-with-muse-glimmer-an-apache-2-0-licensed-30b-parameter-ai-model-optimized-for-agents-available-now
+
+- id: gemma-4-31b
+  name: Gemma 4 31B
+  publisher: Google DeepMind
+  hf: https://huggingface.co/google
+  params_total: 31
+  arch: dense
+  modalities: text+image
+  license: Apache-2.0
+  released: 2026-04
+  vram_qlora: 26
+  vram_lora: null
+  vram_infer: 20
+  tags: [general]
+  notes: "bf16 weights fit a single 80 GB H100."
+  status: partial
+  checked: 2026-11-24
+  sources:
+    - https://blog.google/innovation-and-ai/technology/developers-tools/gemma-4/
+
+- id: olmo-3-32b
+  name: OLMo 3 32B
+  publisher: Ai2
+  hf: https://huggingface.co/allenai
+  params_total: 32
+  arch: dense
+  modalities: text
+  context: 65K
+  license: Apache-2.0
+  released: 2025-11
+  vram_qlora: 28
+  vram_lora: null
+  vram_infer: 20
+  tags: [fully-open, research, base-available]
+  status: verified
+  checked: 2026-11-24
+  sources:
+    - https://thenewstack.io/ai2s-olmo-3-pushes-the-envelope-for-open-source-llm-performance/
+
+- id: nanbeige4.3-33b
+  name: Nanbeige4.3-33B
+  publisher: Nanbeige LLM Lab (BOSS Zhipin)
+  hf: https://huggingface.co/Nanbeige/Nanbeige4.3-33B
+  base: https://huggingface.co/Nanbeige/Nanbeige4.3-33B-Base
+  params_total: 33
+  arch: dense
+  modalities: text
+  context: 512K
+  license: Apache-2.0
+  released: 2026-10
+  vram_qlora: 30
+  vram_lora: null
+  vram_infer: 21
+  tags: [agentic, coding, teacher, base-available]
+  notes: "LlamaForCausalLM architecture, so standard tooling works. Positioned as teacher for a planned Nanbeige4.3-3B. Benchmarks are self-reported."
+  status: verified
+  checked: 2026-11-24
+  sources:
+    - https://www.marktechpost.com/2026/10/25/nanbeige-releases-nanbeige4-3-33b-open-agentic-coding-model/
+
+- id: qwen3.5-35b-a3b
+  name: Qwen3.5-35B-A3B
+  publisher: Alibaba Qwen
+  hf: https://huggingface.co/Qwen/Qwen3.5-35B-A3B
+  base: https://huggingface.co/Qwen/Qwen3.5-35B-A3B-Base
+  params_total: 35
+  params_active: 3
+  arch: moe
+  modalities: text+image
+  context: 262K
+  license: Apache-2.0
+  released: 2026-02
+  vram_qlora: 28
+  vram_lora: null
+  vram_infer: 21
+  tags: [fast-inference, base-available]
+  status: verified
+  checked: 2026-11-24
+  sources:
+    - https://rits.shanghai.nyu.edu/ai/qwen-3-5-medium-series-frontier-ai-that-fits-on-your-gpu/
+
+- id: qwen3.6-35b-a3b
+  name: Qwen3.6-35B-A3B
+  publisher: Alibaba Qwen
+  hf: https://huggingface.co/Qwen/Qwen3.6-35B-A3B
+  params_total: 35
+  params_active: 3
+  arch: moe
+  modalities: text+image
+  license: Apache-2.0 (confirm on card)
+  vram_qlora: 28
+  vram_lora: null
+  vram_infer: 21
+  tags: [fast-inference]
+  notes: "Appears in Qwen3.6-27B benchmark tables; repo not yet checked directly."
+  status: partial
+  checked: 2026-11-24
+  sources:
+    - https://huggingface.co/Qwen/Qwen3.6-27B

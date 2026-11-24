@@ -1,0 +1,39 @@
+# Models mentioned somewhere but NOT confirmed, or excluded for license reasons.
+# Promote to models.yml only after checking the official repo.
+
+unverified:
+  - name: Inkling 2 Mini (claimed 26.4B / 3.4B active, looped MoE)
+    reason: "No first-party source found. Thinking Machines' 2nd-gen release is Inkling 2 Small (594B/17B active), closed weights on Tinker for now. 'Inkling-mini' on HF is a third-party upload."
+    checked: 2026-11-24
+  - name: Mellum2.1-Thinking
+    reason: "Not checked yet."
+    checked: 2026-11-24
+  - name: Nemotron 3.5 Bolt E4B
+    reason: "Not checked yet. NVIDIA models often use the NVIDIA Open Model License, not Apache."
+    checked: 2026-11-24
+  - name: Arete-27B
+    reason: "Not checked yet."
+    checked: 2026-11-24
+  - name: Qwen AgentWorld 35B-A3B
+    reason: "Not checked yet."
+    checked: 2026-11-24
+  - name: Nanbeige4.3-3B
+    reason: "Announced as planned, not released (as of 2026-10-25)."
+    checked: 2026-11-24
+
+license_caution:
+  - family: Llama 3.x / Llama 4
+    license: Llama Community License
+    note: "Custom terms, attribution and usage restrictions."
+  - family: Gemma 1–3
+    license: Gemma Terms of Use
+    note: "Custom terms. Gemma 4 moved to Apache 2.0."
+  - family: NVIDIA Nemotron (most)
+    license: NVIDIA Open Model License
+    note: "Read before commercial derivatives."
+  - family: Liquid LFM
+    license: LFM Open License
+    note: "Revenue threshold restrictions."
+  - family: Community distills / merges
+    license: varies
+    note: "Teacher-data rights and multiple upstream licenses are often unclear."
