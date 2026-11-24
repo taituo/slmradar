@@ -8,11 +8,27 @@ order: 3.5
 
 <div class="legend-key"><span><i style="background:var(--muted);border:1px solid var(--ring)"></i>frozen</span><span><i style="background:var(--series-1)"></i>trained / changed</span><span><i style="background:var(--seq-2)"></i>supporting (activations, optimizer)</span></div>
 
+## Training in one picture
+
+<div data-diagram="train"></div>
+
+## Inside a transformer block
+
+<div data-diagram="anatomy"></div>
+
+## Which parts train
+
+<div data-diagram="peft"></div>
+
 ## LoRA
 
 <div data-diagram="lora"></div>
 
 **Try it:** `mlx_lm.lora` on Qwen3.5-4B with 200 examples of your preferred answer format. Compare the outputs before and after on your probe prompts.
+
+## DoRA
+
+<div data-diagram="dora"></div>
 
 ## QLoRA
 
@@ -20,11 +36,25 @@ order: 3.5
 
 **Try it:** the same run as above, but on a 4-bit `mlx_lm.convert -q` copy of a 27B model. Note the memory use and how much slower it is.
 
+## Quantization
+
+<div data-diagram="quant"></div>
+
 ## Where memory goes
 
 <div data-diagram="memory"></div>
 
 This is why the [catalog](catalog.html) lists two training numbers: QLoRA and LoRA bf16.
+
+## Gradient checkpointing
+
+<div data-diagram="checkpoint"></div>
+
+## SFT data and loss masking
+
+<div data-diagram="sft"></div>
+
+Starter data: [Recipes](recipes.html).
 
 ## Activation steering
 
@@ -43,6 +73,10 @@ This is why the [catalog](catalog.html) lists two training numbers: QLoRA and Lo
 <div data-diagram="merging"></div>
 
 **Try it:** take two LoRAs trained on the same base, fuse each one, then interpolate between them at 0.3 / 0.5 / 0.7.
+
+## TIES / DARE
+
+<div data-diagram="ties"></div>
 
 ## Layer surgery
 
@@ -91,3 +125,23 @@ Needs an automatic reward: tests, schema validation or exact-match answers. Smal
 <div data-diagram="rome"></div>
 
 The most surgical option, and the closest to "programming" a model. OLMo 3's intermediate checkpoints let you check where a behavior formed before you edit it.
+
+## Weight-space programming
+
+<div data-diagram="wsp"></div>
+
+## RAG or fine-tune?
+
+<div data-diagram="rag"></div>
+
+## Multi-LoRA serving
+
+<div data-diagram="multilora"></div>
+
+## Prefix cache
+
+<div data-diagram="prefixcache"></div>
+
+## Unified memory vs. a discrete GPU
+
+<div data-diagram="unified"></div>

@@ -1,0 +1,6 @@
+# Measured decode speeds. Add your own runs here; the Speed page shows them next to the estimate.
+# Measure with: mlx_lm.generate --model <path> --prompt "..." --max-tokens 256   (prints tokens/sec)
+#          or:  llama-bench -m model.gguf
+# Example entry (remove the leading '#'):
+# - {model: qwen3.5-9b, device: "MacBook M5 Pro", runtime: "mlx-lm 4-bit", decode_tps: 0, prefill_tps: 0, date: 2026-11-24}
+[]

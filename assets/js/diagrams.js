@@ -15,6 +15,157 @@
   const dot = (x, y, cls = 'dt', r = 5) => `<circle cx="${x}" cy="${y}" r="${r}" class="${cls}"/>`;
 
   const D = {
+
+    train: {
+      title: 'Training in one picture',
+      cap: 'Forward pass: the model predicts the next token. The loss measures how wrong it was. The backward pass turns the loss into gradients, and the optimizer nudges the trainable weights. Every method on this page changes what is trainable, or what the loss rewards.',
+      svg: () => T(40, 82, 'input', 'tb') + A(70, 78, 108, 78) + R(110, 50, 150, 60, 'f', 10) + T(185, 84, 'model', 'tw') +
+        A(260, 78, 298, 78) + R(300, 58, 80, 40, 'b') + T(340, 82, 'prediction', 'tb') +
+        R(300, 150, 80, 40, 'b') + T(340, 174, 'target', 'tb') + L(380, 78, 420, 120, 'ln') + L(380, 170, 420, 128, 'ln') +
+        `<circle cx="440" cy="124" r="22" class="b"/>` + T(440, 129, 'loss', 'tb') +
+        `<path d="M440,148 C440,225 185,225 185,114" class="la flow" fill="none"/>` + `<polygon points="185,112 180,122 190,122" class="ah-a"/>` +
+        T(312, 232, 'backward: gradients → optimizer step', 't')
+    },
+    anatomy: {
+      title: 'Inside a transformer block: where adapters attach',
+      cap: 'Each block reads from the residual stream, runs attention and then an MLP, and adds its result back. LoRA usually targets the attention projections (q, k, v, o) and often the MLP (gate, up, down). More targets means more capacity and more memory.',
+      svg: () => {
+        let s = A(15, 200, 508, 200, 'ln thick') + T(505, 218, 'residual stream →', 't', 'end');
+        const grp = (x, w, name, subs) => {
+          let g = R(x, 30, w, 110, 'b', 10) + T(x + w / 2, 50, name, 'tb');
+          const sw = (w - 20 - (subs.length - 1) * 8) / subs.length;
+          subs.forEach((n, i) => { const sx = x + 10 + i * (sw + 8); g += R(sx, 66, sw, 34, 'b2', 5) + T(sx + sw / 2, 88, n, 'tb') + R(sx, 106, sw, 8, 'f', 3); });
+          return g + A(x + 20, 200, x + 20, 142, 'ln') + A(x + w - 20, 142, x + w - 20, 196, 'ln') + T(x + w - 20, 165, '⊕', 'op', 'middle');
+        };
+        return s + grp(30, 220, 'attention', ['q', 'k', 'v', 'o']) + grp(285, 200, 'MLP', ['gate', 'up', 'down']) +
+          R(30, 222, 12, 8, 'f', 2) + T(48, 230, 'LoRA adapter on that projection', 't', 'start');
+      }
+    },
+    peft: {
+      title: 'Which parts train: full vs. PEFT',
+      cap: 'Every PEFT method freezes the big weights and trains something small next to them: low-rank matrices (LoRA), a small inserted layer (adapters), scaling vectors (IA³) or only the biases (BitFit). Full fine-tuning trains everything.',
+      svg: () => {
+        const col = (x, label, sub, extra, full) => R(x, 50, 80, 80, full ? 'f' : 'b', 6) + T(x + 40, 95, 'W', full ? 'tw' : 'tb') + extra + T(x + 40, 205, label, 'tb') + T(x + 40, 222, sub, 't');
+        return col(10, 'Full FT', '100%', '', true) +
+          col(112, 'LoRA', '~0.1–1%', R(196, 50, 7, 80, 'f', 2) + R(112, 136, 80, 7, 'f', 2), false) +
+          col(214, 'Adapter', '~1–3%', A(254, 130, 254, 150) + R(229, 152, 50, 22, 'f', 5), false) +
+          col(316, 'IA³', '~0.01%', [0, 1, 2, 3, 4, 5].map(i => dot(322 + i * 14, 142, 'dt', 4)).join(''), false) +
+          col(418, 'BitFit', '~0.1%', R(418, 138, 80, 8, 'f', 3) + T(458, 160, '+ b', 't'), false);
+      }
+    },
+    dora: {
+      title: 'DoRA: magnitude and direction',
+      cap: 'DoRA splits each weight column into a length (magnitude) and a direction. LoRA updates only the direction, and the magnitude gets its own small trainable vector. It often matches full fine-tuning more closely than plain LoRA at the same rank.',
+      svg: () => T(30, 126, 'W′ =', 'tb', 'start') +
+        [0, 1, 2, 3, 4, 5, 6, 7].map(i => R(80 + i * 14, 60 + (i * 37 % 40), 10, 80 - (i * 37 % 40), 'f', 2)).join('') + T(136, 165, 'm · magnitude', 't') + T(136, 182, '(trainable)', 't') +
+        T(208, 118, '⊙', 'op') +
+        R(230, 50, 110, 100, 'b') + grid(230, 50, 110, 100, 14) + T(285, 165, 'V + BA', 'tb') + T(285, 182, 'direction (LoRA)', 't') +
+        R(345, 50, 7, 100, 'f', 2) + R(230, 154, 110, 0, 'f') +
+        T(380, 104, '÷ ‖V + BA‖', 'tb', 'start') + T(380, 124, 'normalize each column', 't', 'start')
+    },
+    quant: {
+      title: 'Quantization: 16 bits → 4 bits',
+      cap: 'Weights are split into small groups (say 32–64 values). Each group stores one scale plus 4-bit integers (16 levels). That makes it roughly 4× smaller with a small quality loss. QLoRA trains on top of this, and MLX and llama.cpp run it directly.',
+      svg: () => {
+        const v = [.62, .35, .8, .15, .52, .9, .44, .27, .71, .58, .2, .84, .39, .66, .48, .12];
+        let s = T(130, 24, 'bf16 · 16 bits each', 'tb') + T(390, 24, '4-bit + scale per group', 'tb');
+        v.forEach((x, i) => { s += R(20 + i * 14, 150 - x * 100, 10, x * 100, 'b2', 2); });
+        s += A(250, 100, 275, 100);
+        v.forEach((x, i) => { const q = Math.round(x * 15) / 15; s += R(285 + i * 14, 150 - q * 100, 10, q * 100, 'f', 2); });
+        for (let l = 0; l <= 15; l += 3) s += L(282, 150 - l / 15 * 100, 507, 150 - l / 15 * 100, 'g');
+        return s + R(285, 160, 108, 18, 'f2', 4) + T(339, 173, 'group 1 · scale s₁', 't') + R(397, 160, 108, 18, 'f2', 4) + T(451, 173, 'group 2 · scale s₂', 't') +
+          T(260, 220, 'stored: 4-bit integers + one scale per group ≈ 4.5 bits / weight', 't');
+      }
+    },
+    checkpoint: {
+      title: 'Gradient checkpointing: trade compute for memory',
+      cap: 'The backward pass needs every layer\'s activations. Normally they are all kept in memory. With checkpointing only every few layers are stored, and the rest are recomputed during the backward pass. That cuts memory a lot, at roughly 20–30% more compute.',
+      svg: () => {
+        let s = T(18, 70, 'normal', 'tb', 'start') + T(18, 170, 'checkpointed', 'tb', 'start');
+        for (let i = 0; i < 8; i++) {
+          const x = 120 + i * 48;
+          s += R(x, 40, 40, 22, 'b', 4) + T(x + 20, 56, 'L' + (i + 1), 'tb') + R(x + 6, 68, 28, 34, 'f2', 3);
+          s += R(x, 140, 40, 22, 'b', 4) + T(x + 20, 156, 'L' + (i + 1), 'tb') + (i % 3 === 0 ? R(x + 6, 168, 28, 34, 'f2', 3) : R(x + 6, 168, 28, 34, 'b ghost', 3));
+        }
+        return s + T(300, 225, 'solid = stored activations · dashed = recomputed on the way back', 't');
+      }
+    },
+    sft: {
+      title: 'SFT data: only the answer is graded',
+      cap: 'Training examples are whole conversations rendered with the model\'s chat template. The loss is usually masked so that only the assistant tokens count. The model learns to answer, not to repeat the prompt. A wrong chat template is the most common silent bug.',
+      svg: () => {
+        const toks = [['<sys>', 0], ['You', 0], ['are…', 0], ['<user>', 0], ['Fix', 0], ['this', 0], ['bug', 0], ['<asst>', 0], ['The', 1], ['issue', 1], ['is…', 1], ['<end>', 1]];
+        const e = t => t.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        let s = '', x = 14;
+        toks.forEach(([t, on]) => { const w = t.length * 6.2 + 12; s += R(x, 80, w, 32, on ? 'f' : 'b', 6) + T(x + w / 2, 100, e(t), on ? 'tw' : 'tb'); x += w + 3; });
+        return s + L(14, 130, 300, 130, 'ln') + T(160, 150, 'masked · no loss', 't') + L(318, 130, 506, 130, 'la') + T(412, 150, 'loss on these tokens', 'tb') +
+          T(260, 50, 'one training example, after the chat template', 't') + T(260, 210, 'format: {"messages": [{"role": "user", …}, {"role": "assistant", …}]}', 't');
+      }
+    },
+    ties: {
+      title: 'TIES / DARE: merge without interference',
+      cap: 'Naively adding task vectors lets their signs cancel each other out. TIES trims small changes, elects one sign per parameter by majority, then averages only the values that agree. DARE randomly drops changes and rescales the rest before merging.',
+      svg: () => {
+        const rows = [[.8, -.2, .6, .1, -.7, .05, .5, -.3], [.6, .3, -.4, -.05, -.6, .4, .1, -.5], [-.1, -.4, .7, .5, -.5, .02, .6, .2]];
+        const res = [.7, -.35, .65, .5, -.6, .4, .55, -.4];
+        const cell = (x, y, v, cls) => v >= 0 ? R(x, y - v * 26, 16, Math.max(1, v * 26), cls, 2) : R(x, y, 16, -v * 26, cls, 2);
+        let s = '';
+        rows.forEach((r, j) => { const y = 42 + j * 56; s += T(20, y + 4, 'τ' + (j + 1), 'tb', 'start') + L(50, y, 250, y, 'g');
+          r.forEach((v, i) => { s += cell(56 + i * 24, y, v, Math.abs(v) < .25 ? 'b ghost' : 'b2'); }); });
+        s += A(262, 98, 300, 98, 'la') + T(281, 122, 'trim + elect sign', 't');
+        const y = 98; s += L(310, y, 510, y, 'g'); res.forEach((v, i) => { s += cell(316 + i * 24, y, v, 'f'); });
+        return s + T(410, 150, 'merged', 'tb') + T(150, 226, 'dashed = trimmed (too small)', 't') + T(410, 226, 'one sign per parameter', 't');
+      }
+    },
+    rag: {
+      title: 'RAG or fine-tune?',
+      cap: 'RAG puts facts into the prompt at question time. It is easy to update and you can show sources. Fine-tuning changes how the model behaves: format, style, tool use, skills. Use RAG for knowledge that changes, fine-tuning for behavior, and often both.',
+      svg: () => T(18, 50, 'RAG', 'tb', 'start') + T(70, 50, 'question', 't', 'start') + A(126, 46, 156, 46) +
+        R(158, 28, 80, 36, 'b') + T(198, 51, 'retriever', 'tb') + A(238, 46, 266, 46) + R(268, 28, 66, 36, 'b2') + T(301, 51, 'docs', 'tb') +
+        A(334, 46, 362, 46) + R(364, 28, 70, 36, 'b') + T(399, 51, 'model', 'tb') + A(434, 46, 462, 46) + T(466, 50, 'answer', 't', 'start') +
+        T(18, 150, 'Fine-tune', 'tb', 'start') + T(100, 150, 'question', 't', 'start') + A(156, 146, 254, 146) +
+        R(256, 124, 110, 44, 'f', 8) + T(311, 151, 'model + LoRA', 'tw') + A(366, 146, 462, 146) + T(466, 150, 'answer', 't', 'start') +
+        T(260, 92, 'facts that change → retrieve them', 't') + T(260, 200, 'behavior, format, skills → train them', 't')
+    },
+    multilora: {
+      title: 'Multi-LoRA serving: one base, many adapters',
+      cap: 'Load the base model once and keep many small adapters next to it. Each request names its adapter and the server applies it on the fly (vLLM and SGLang both do this). That is how a fleet of specialists stays cheap.',
+      svg: () => {
+        let s = R(170, 70, 180, 100, 'b', 12) + T(260, 115, 'base model', 'tb') + T(260, 134, 'loaded once', 't');
+        ['sql', 'tests', 'style', 'tools'].forEach((n, i) => { s += R(368, 40 + i * 42, 70, 30, 'f', 6) + T(403, 60 + i * 42, n, 'tw') + L(350, 120, 368, 55 + i * 42, 'ln faint'); });
+        ['req · sql', 'req · tests', 'req · tools'].forEach((n, i) => { s += R(14, 60 + i * 44, 100, 28, 'b2', 6) + T(64, 78 + i * 44, n, 'tb') + A(114, 74 + i * 44, 168, 120, 'ln'); });
+        return s + T(260, 215, 'adapters: a few MB each · hot-swapped per request', 't');
+      }
+    },
+    prefixcache: {
+      title: 'Prefix cache: don\'t recompute the shared start',
+      cap: 'Agent calls often start with the same system prompt and tool definitions. A prefix cache (SGLang\'s radix tree, or vLLM\'s prefix caching) keeps the KV cache for that shared start and only computes the new tokens.',
+      svg: () => R(20, 95, 150, 40, 'f', 8) + T(95, 113, 'system + tools', 'tw') + T(95, 127, 'cached once', 'tw2') +
+        L(170, 115, 220, 55, 'la') + L(170, 115, 220, 115, 'la') + L(170, 115, 220, 175, 'la') +
+        [['task A', 55], ['task B', 115], ['task C', 175]].map(([n, y]) => R(222, y - 18, 90, 36, 'b2', 6) + T(267, y + 5, n, 'tb') + L(312, y, 340, y, 'ln') + R(342, y - 14, 70, 28, 'b', 6) + T(377, y + 5, 'new', 't')).join('') +
+        T(470, 105, 'blue = reused', 't') + T(470, 125, 'gray = computed', 't')
+    },
+    unified: {
+      title: 'Unified memory vs. a discrete GPU',
+      cap: 'On the Mac, CPU and GPU share one pool of memory, so a 30B model in 4-bit simply fits, with no copying. An NVIDIA card has its own fast VRAM (12–32 GB on consumer cards), and the model must fit there. Spilling over PCIe to system RAM is painfully slow.',
+      svg: () => T(130, 26, 'MacBook M5 Pro', 'tb') + R(20, 40, 220, 120, 'b2', 12) + T(130, 64, 'unified memory · 48 GB', 'tb') +
+        R(36, 80, 80, 60, 'b', 8) + T(76, 114, 'CPU', 'tb') + R(144, 80, 80, 60, 'f', 8) + T(184, 114, 'GPU', 'tw') + T(130, 182, 'GPU can use ~36 GB of it', 't') +
+        T(390, 26, 'PC + NVIDIA', 'tb') + R(280, 40, 100, 120, 'b2', 12) + T(330, 64, 'system RAM', 'tb') + R(295, 80, 70, 60, 'b', 8) + T(330, 114, 'CPU', 'tb') +
+        L(380, 100, 410, 100, 'ln dash') + T(395, 92, 'PCIe', 't') +
+        R(410, 40, 100, 120, 'f', 12) + T(460, 94, 'VRAM', 'tw') + T(460, 112, '12–32 GB', 'tw2') + T(395, 182, 'model must fit in VRAM', 't')
+    },
+    wsp: {
+      title: 'Weight-space programming loop',
+      cap: 'A strong model acts as the engineer: it inspects the small model\'s tensors through tools, forms a hypothesis, writes a patch, runs the probes, and keeps or reverts the change. Every step is versioned. This is an early research direction; see Research.',
+      svg: () => {
+        const cx = 300, cy = 120, r = 88, steps = ['inspect', 'hypothesize', 'patch', 'probe', 'keep / revert'];
+        let s = R(14, 85, 120, 70, 'b', 10) + T(74, 116, 'small model', 'tb') + T(74, 134, 'weights v1, v2…', 't') + L(134, 120, cx - r - 30, 120, 'ln dash');
+        s += `<circle cx="${cx}" cy="${cy}" r="${r}" class="la flow" fill="none"/>`;
+        steps.forEach((n, i) => { const a = -Math.PI / 2 + i * 2 * Math.PI / 5, x = cx + r * Math.cos(a), y = cy + r * Math.sin(a), w = n.length * 7 + 16;
+          s += R(x - w / 2, y - 14, w, 28, i === 2 ? 'f' : 'b', 8) + T(x, y + 5, n, i === 2 ? 'tw' : 'tb'); });
+        return s + T(cx, cy - 4, 'frontier model', 'tb') + T(cx, cy + 14, 'as engineer', 't') + T(460, 230, 'every edit versioned', 't');
+      }
+    },
     lora: {
       title: 'LoRA: learn a small low-rank update',
       cap: 'The big matrix W stays frozen. Two thin matrices B (d×r) and A (r×k) learn the change, so you train a few million parameters instead of billions. Afterwards BA can be merged into W.',
@@ -43,7 +194,7 @@
       title: 'Activation steering: add a direction',
       cap: 'Run contrasting prompts (say formal vs. casual) and take the difference of their mean activations: that gives a direction v. At inference, add α·v to the residual stream at one layer. No training, and it can be removed instantly.',
       svg: () => {
-        let s = A(20, 100, 505, 100, 'ln thick') + T(500, 88, 'residual stream', 't', 'end');
+        let s = A(20, 100, 505, 100, 'ln thick') + T(505, 118, 'residual stream →', 't', 'end');
         for (let i = 0; i < 5; i++) { const x = 45 + i * 92; s += R(x, 40, 56, 30, 'b') + T(x + 28, 60, 'L' + (i + 1), 'tb') + L(x + 28, 70, x + 28, 100, 'ln'); }
         s += A(257, 175, 257, 104, 'la flow') + T(268, 150, '+ α·v', 'tb', 'start');
         s += [[40, 190], [52, 205], [62, 186], [48, 218], [70, 210]].map(p => dot(p[0], p[1], 'dt2', 4)).join('') +
@@ -60,7 +211,7 @@
         L(300, 70, 316, 158, 'ln dash') + dot(316, 158, 'dt2', 4) + T(326, 172, '(h·v) v', 't', 'start') +
         A(140, 190, 124, 102, 'la thick') + T(116, 96, 'h′ = h − (h·v) v', 'tb', 'end') +
         dot(140, 190, 'dt2', 4) + T(140, 212, '0', 't') +
-        T(400, 60, 'steering: h + α·v', 't', 'start') + T(400, 80, 'ablation: h − (h·v)v', 't', 'start') + T(400, 100, 'bake: W ← W − v vᵀW', 't', 'start')
+        T(372, 60, 'steering: h + α·v', 't', 'start') + T(372, 80, 'ablation: h − (h·v)v', 't', 'start') + T(372, 100, 'bake: W ← W − v vᵀW', 't', 'start')
     },
     merging: {
       title: 'Model merging: arithmetic on weights',

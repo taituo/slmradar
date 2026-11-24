@@ -1,0 +1,16 @@
+# Below the 3B catalog floor: handy for edge devices and very fast local loops.
+- name: Qwen3.5-0.8B
+  hf: https://huggingface.co/Qwen/Qwen3.5-0.8B
+  license: Apache-2.0
+  note: "Used in the published weight-space programming demo; good for reproducing it."
+  status: partial
+- name: Qwen3.5-2B
+  hf: https://huggingface.co/Qwen/Qwen3.5-2B
+  license: Apache-2.0
+  note: "Fast LoRA iteration on any Mac."
+  status: partial
+- name: Gemma 4 E2B
+  hf: https://huggingface.co/google
+  license: Apache-2.0
+  note: "'Effective 2B' edge model, 128K context."
+  status: partial

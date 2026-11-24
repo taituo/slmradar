@@ -245,3 +245,6 @@ svg.dg { display: block; width: 100%; height: auto; background: var(--surface-1)
 :root[data-look="pure"] .columns { gap: 2.2rem 3rem; }
 .look-toggle { width: auto !important; padding: 0 .6rem; font-size: .8rem !important; }
 section.block > h2:first-child + .diagram > .dg-title { display: none; }
+
+.sel { font: inherit; font-size: .85rem; padding: .4rem .6rem; border: 1px solid var(--border); border-radius: 10px; background: var(--card); color: var(--fg); }
+ul.tight { margin: .3rem 0 0; padding-left: 1.1rem; } ul.tight li { margin: .15rem 0; }

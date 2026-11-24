@@ -229,7 +229,7 @@
         (!q || [m.name, m.publisher, m.license, (m.tags || []).join(' '), m.notes].join(' ').toLowerCase().includes(q)))
         .sort((a, b) => { const x = val(a, sortKey), y = val(b, sortKey); return (x > y ? 1 : x < y ? -1 : 0) * dir; });
       tb.innerHTML = rows.map(m => `<tr>
-        <td><a class="model-name" href="${esc(m.hf)}">${esc(m.name)}</a>${m.base ? ` · <a href="${esc(m.base)}">base</a>` : ''}<span class="model-sub">${esc(m.publisher)}</span></td>
+        <td><a class="model-name" href="${esc(m.hf)}">${esc(m.name)}</a>${m.base ? ` · <a href="${esc(m.base)}">base</a>` : ''}<span class="model-sub">${esc(m.publisher)}${m.good_for ? ' · ' + esc(m.good_for) : ''}</span></td>
         <td class="num">${m.params_total}B${m.params_active ? `<span class="model-sub">${m.params_active}B act.</span>` : ''}</td>
         <td>${esc(m.arch)}</td><td>${esc(m.modalities)}</td><td>${esc(m.context || '?')}</td><td>${esc(m.license.replace(' (confirm on card)', '*'))}</td><td>${esc(m.released || '?')}</td>
         <td><span class="badge ${macFit(m) >= 2 ? 'good' : macFit(m) === 1 ? 'warn' : ''}"><span class="dot"></span>${MAC[macFit(m)]}</span></td>
@@ -259,12 +259,90 @@
     host.innerHTML = M.filter(m => m.notes).map(m => `<a class="card" href="${esc(m.hf)}"><div class="k">${esc(m.publisher)}</div><div class="v">${esc(m.name)}</div><div class="d">${esc(m.notes)}</div></a>`).join('');
   }
 
+
+  // ---------- 9. tooling matrix ----------
+  const TOOLS = [['transformers', 'transformers'], ['mlx', 'mlx-lm'], ['llamacpp', 'llama.cpp'], ['vllm', 'vLLM'], ['sglang', 'SGLang']];
+  const TV = { yes: [4, 'yes'], likely: [3, 'likely'], partial: [2, 'partial'], no: [0, 'no'], '?': [1, '?'] };
+  function tooling(host) {
+    const rows = M.filter(m => m.tooling).sort((a, b) => a.params_total - b.params_total);
+    const rh = 28, top = 34, H = top + rows.length * rh + 4;
+    const { svg, W } = frame(host, 'Runtime support per model', 'Checked 2026-11-24. "?" means not checked yet, not "unsupported". Hover for gotchas.', H);
+    const left = Math.min(200, W * .3), cw = (W - left) / TOOLS.length;
+    const fill = { 4: 'var(--seq-3)', 3: 'var(--seq-2)', 2: 'var(--seq-1)', 1: 'transparent', 0: 'transparent' };
+    TOOLS.forEach(([, l], i) => txt(svg, left + cw * i + cw / 2, 18, l, 'axis-label', 'middle'));
+    rows.forEach((m, r) => {
+      const y = top + r * rh;
+      txt(svg, left - 10, y + rh / 2 + 4, m.name, '', 'end');
+      TOOLS.forEach(([k, l], i) => {
+        const raw = String(m.tooling[k] ?? '?'), [lv, lab] = TV[raw] || TV['?'], x = left + cw * i;
+        const rect = el('rect', { x: x + 2, y: y + 2, width: cw - 4, height: rh - 4, rx: 5, fill: fill[lv], stroke: lv <= 1 ? 'var(--grid)' : 'none', 'stroke-dasharray': lv === 0 ? '3 3' : '' }, svg);
+        txt(svg, x + cw / 2, y + rh / 2 + 4, lab, 'cell-text' + (lv === 4 ? ' on-dark' : ''), 'middle', { 'pointer-events': 'none' });
+        hover(rect, `<b>${esc(m.name)}</b> · ${esc(l)}: ${esc(lab)}` + ((m.gotchas || []).length ? '<br><span class="m">' + m.gotchas.map(esc).join('<br>') + '</span>' : ''));
+      });
+    });
+    legend(host, [['var(--seq-3)', 'yes'], ['var(--seq-2)', 'likely (standard arch)'], ['var(--seq-1)', 'partial / fork / PR branch'], ['transparent', 'no or not checked (see label)']]);
+  }
+
+  // ---------- 10. gotchas ----------
+  function gotchas(host) {
+    host.className = 'cards';
+    host.innerHTML = M.filter(m => (m.gotchas || []).length).map(m =>
+      `<div class="card"><div class="k">${esc(m.publisher)}</div><div class="v">${esc(m.name)}</div><div class="d"><ul class="tight">${m.gotchas.map(g => `<li>${esc(g)}</li>`).join('')}</ul></div></div>`).join('');
+  }
+
+  // ---------- 11. speed estimator ----------
+  function speed(host) {
+    const devs = D.devices || [], meas = D.speed || [];
+    const Q = [['4-bit', 4.5], ['8-bit', 8.5], ['bf16', 16]];
+    let dev = 0, q = 0;
+    host.innerHTML = '';
+    const head = document.createElement('div'); head.className = 'toolbar'; head.style.margin = '0 0 .4rem';
+    head.innerHTML = `<label class="count" style="margin:0">Device</label><select class="sel dev">${devs.map((d, i) => `<option value="${i}">${esc(d.name)} · ${d.gbps} GB/s</option>`).join('')}</select>
+      <label class="count" style="margin:0 0 0 .5rem">Weights</label>${Q.map((x, i) => `<button class="chip" data-q="${i}" aria-pressed="${i === 0}">${x[0]}</button>`).join('')}`;
+    host.appendChild(head);
+    const box = document.createElement('div'); host.appendChild(box);
+    function draw() {
+      const d = devs[dev], bits = Q[q][1], budget = d.usable || d.mem;
+      const rows = M.map(m => {
+        const act = m.params_active || m.params_total, gb = m.params_total * bits / 8;
+        return { m, gb, fits: gb + 2 <= budget, ub: d.gbps / (act * bits / 8) };
+      }).sort((a, b) => b.ub - a.ub);
+      const rh = 24, top = 8, H = top + rows.length * rh + 26;
+      const { svg, W } = frame(box, `Estimated decode speed on ${d.name} (${Q[q][0]})`,
+        'Upper bound = memory bandwidth ÷ bytes read per token (active params × bits/8). Real speeds usually land at 50–75% of this. Faded = weights don’t fit.', H);
+      const left = Math.min(190, W * .3), right = 80, max = Math.max(...rows.map(r => r.ub));
+      const X = v => left + v / max * (W - left - right);
+      const step = [10, 20, 25, 50, 100, 200, 250, 500, 1000].find(s => s >= max / 5) || 1000;
+      const ticks = []; for (let v = 0; v <= max; v += step) ticks.push(v);
+      ticks.forEach(v => { el('line', { x1: X(v), x2: X(v), y1: top, y2: H - 22, class: 'gridline' }, svg); txt(svg, X(v), H - 6, v + '', 'axis-label', 'middle'); });
+      txt(svg, W - right + 6, H - 6, 'tok/s', 'axis-label');
+      rows.forEach((r, i) => {
+        const y = top + i * rh + 4, bh = rh - 8;
+        txt(svg, left - 10, y + bh / 2 + 4, r.m.name, '', 'end');
+        el('rect', { x: left, y, width: Math.max(2, X(r.ub * .65) - left), height: bh, rx: 4, class: 'bar', opacity: r.fits ? 1 : .25 }, svg);
+        const ub = el('rect', { x: left, y, width: Math.max(2, X(r.ub) - left), height: bh, rx: 4, fill: 'var(--seq-1)', opacity: r.fits ? .9 : .2 }, svg);
+        svg.insertBefore(ub, svg.lastChild.previousSibling);
+        const mm = meas.find(x => x.model === r.m.id && x.device === d.name && x.decode_tps);
+        if (mm) el('circle', { cx: X(mm.decode_tps), cy: y + bh / 2, r: 5, fill: 'var(--text-primary)', stroke: 'var(--surface-1)', 'stroke-width': 2 }, svg);
+        txt(svg, X(r.ub) + 6, y + bh / 2 + 4, r.fits ? `≤ ${Math.round(r.ub)}` : `needs ${Math.round(r.gb)} GB`, r.fits ? 'label' : 'axis-label');
+        const hit = el('rect', { x: 0, y, width: W, height: bh, fill: 'transparent' }, svg);
+        hover(hit, `<b>${esc(r.m.name)}</b><br>weights ≈ ${r.gb.toFixed(1)} GB (${Q[q][0]})${r.fits ? '' : ' · does not fit'}<br>upper bound ≈ ${Math.round(r.ub)} tok/s · typical ≈ ${Math.round(r.ub * .5)}–${Math.round(r.ub * .75)}` +
+          (mm ? `<br>measured: ${mm.decode_tps} tok/s (${esc(mm.runtime)})` : '<br><span class="m">no measurement yet</span>'));
+      });
+      legend(box, [['var(--seq-1)', 'theoretical upper bound'], ['var(--series-1)', 'typical (~65%)'], ['var(--text-primary)', 'measured (data/speed.yml)']]);
+    }
+    head.querySelector('.dev').addEventListener('change', e => { dev = +e.target.value; draw(); });
+    head.querySelectorAll('[data-q]').forEach(b => b.addEventListener('click', () => { q = +b.dataset.q; head.querySelectorAll('[data-q]').forEach(x => x.setAttribute('aria-pressed', x === b)); draw(); }));
+    draw();
+  }
+
   const R = {
-    'fit-scatter': fitScatter, 'fit-matrix': fitMatrix, timeline, quadrant, budgets, stats, catalog, notes,
+    'fit-scatter': fitScatter, 'fit-matrix': fitMatrix, timeline, quadrant, budgets, stats, catalog, notes, tooling, gotchas, speed,
+    edge: h => listTable(h, D.edge || [], [['name', 'Model'], ['license', 'License'], ['note', 'Why it’s useful'], ['status', 'Status']]),
     'watch-unverified': h => listTable(h, (D.watchlist || {}).unverified || [], [['name', 'Model / claim'], ['reason', 'Why it’s here'], ['checked', 'Checked']]),
     'watch-license': h => listTable(h, (D.watchlist || {}).license_caution || [], [['family', 'Family'], ['license', 'License'], ['note', 'Note']])
   };
-  const STATIC = new Set(['stats', 'catalog', 'notes', 'watch-unverified', 'watch-license']);
+  const STATIC = new Set(['stats', 'catalog', 'notes', 'watch-unverified', 'watch-license', 'gotchas', 'edge']);
   function renderAll(resizeOnly) {
     document.querySelectorAll('[data-viz]').forEach(h => {
       const k = h.dataset.viz;

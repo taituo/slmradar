@@ -16,6 +16,8 @@ sudo sysctl iogpu.wired_limit_mb=40960   # ~40 GB for the GPU; leave the OS some
 
 <div data-viz="budgets"></div>
 
+<div data-diagram="unified" data-caption="false"></div>
+
 ## What it feels like at each size
 
 | Size | Feel | Good models |

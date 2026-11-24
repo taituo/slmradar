@@ -35,6 +35,8 @@ Claimed results (November 2026, unverified):
 - An MIT-affiliated blog post reports a frontier model editing ~0.016% of Qwen3.5-0.8B's weights and raising MATH-500 from 7.9% to 48.1%. The gain mostly came from fixing a reasoning-loop failure, not from adding new knowledge.
 - Follow-ups reportedly cover weight edits for robot policies and a 27B model rewriting its own weights.
 
+<div data-diagram="wsp"></div>
+
 What would make it practical here:
 
 - A tool interface where the model writes Python against the tensors. You never paste weights into a context window.

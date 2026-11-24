@@ -20,6 +20,10 @@ Planning estimates for **adapter training at seq 2–4K, batch 1, gradient check
 
 MoE models: count **total** params for memory, active params for speed.
 
+<div data-diagram="unified"></div>
+
+<div data-diagram="checkpoint"></div>
+
 ## Consumer NVIDIA cards (12–32 GB)
 
 | VRAM | Example cards | QLoRA up to | LoRA bf16 up to | Comfortable picks |

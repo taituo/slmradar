@@ -15,7 +15,13 @@ sub: Serving options, from laptop to GPU fleet.
 
 ## Pattern: one base, many adapters
 
+<div data-diagram="multilora"></div>
+
 Serve one base model with **multi-LoRA** (vLLM or SGLang) and hot-swap per-task adapters. This fits a fleet of small specialists better than one model per task.
+
+## Prefix caching for agents
+
+<div data-diagram="prefixcache"></div>
 
 ## Checklist before picking a model
 

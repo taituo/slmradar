@@ -1,0 +1,10 @@
+# Memory bandwidth for the speed estimator (GB/s). Spec-sheet numbers.
+- {name: "MacBook M5 Pro", gbps: 307, mem: 48, usable: 36}
+- {name: "RTX 3060 12 GB", gbps: 360, mem: 12}
+- {name: "RTX 4070", gbps: 504, mem: 12}
+- {name: "RTX 4080", gbps: 717, mem: 16}
+- {name: "RTX 3090", gbps: 936, mem: 24}
+- {name: "RTX 4090", gbps: 1008, mem: 24}
+- {name: "RTX 5090", gbps: 1792, mem: 32}
+- {name: "L40S", gbps: 864, mem: 48}
+- {name: "H100 SXM", gbps: 3350, mem: 80}

@@ -11,6 +11,9 @@
 #               lora   = bf16 base + LoRA, same settings
 #               infer  = 4-bit inference incl. modest KV cache
 #   checked:    date this entry was last checked against sources
+#   tooling:    yes | likely | partial | no | '?'  (? = not checked yet)
+#   gotchas:    known pitfalls
+#   good_for:   publisher positioning / intended use, not our benchmark
 
 - id: nanbeige4.2-3b
   name: Nanbeige4.2-3B
@@ -29,6 +32,13 @@
   vram_infer: 4
   tags: [agentic, reasoning, small]
   notes: "3B non-embedding. Looped transformer (22 layers run twice per token). Needs trust_remote_code."
+  tooling: {transformers: yes, mlx: partial, llamacpp: 'no', vllm: partial, sglang: partial}
+  gotchas:
+    - "Needs trust_remote_code in transformers."
+    - "Stock mlx-lm has no 'nanbeige' model type yet (upstream PR pending); community MLX quants ship their own looped class."
+    - "llama.cpp rejects the architecture; vLLM/SGLang only via forks."
+    - "Each loop keeps its own KV cache, so long contexts cost about 2× the KV memory."
+  good_for: "compact agentic reasoning; loop-count experiments"
   status: verified
   checked: 2026-11-24
   sources:
@@ -69,6 +79,12 @@
   vram_infer: 3
   tags: [small, control-model]
   notes: "Gated DeltaNet + attention hybrid. Good control model for small experiments."
+  tooling: {transformers: yes, mlx: partial, llamacpp: yes, vllm: '?', sglang: '?'}
+  gotchas:
+    - "Thinking mode is on by default (<think>…</think>); turn it off in the chat template for plain SFT."
+    - "Hybrid Gated DeltaNet layers: early mlx-lm versions failed with 'model type qwen3_5 not supported'; use a recent mlx-lm."
+    - "Many community GGUFs; pick one built with a recent llama.cpp release."
+  good_for: "general small model; control baseline"
   status: verified
   checked: 2026-11-24
   sources:
@@ -108,6 +124,8 @@
   vram_infer: 5
   tags: [fully-open, research, intermediate-checkpoints]
   notes: "Training data, code and intermediate checkpoints released. Best pick for mechanistic / weight-editing research."
+  tooling: {transformers: yes, mlx: '?', llamacpp: '?', vllm: '?', sglang: '?'}
+  good_for: "research: data, code and intermediate checkpoints are public"
   status: verified
   checked: 2026-11-24
   sources:
@@ -149,6 +167,12 @@
   vram_infer: 6
   tags: [specialist, base-available]
   notes: "Default 'cheap specialist' candidate."
+  tooling: {transformers: yes, mlx: partial, llamacpp: yes, vllm: '?', sglang: '?'}
+  gotchas:
+    - "Thinking mode is on by default (<think>…</think>); turn it off in the chat template for plain SFT."
+    - "Hybrid Gated DeltaNet layers: early mlx-lm versions failed with 'model type qwen3_5 not supported'; use a recent mlx-lm."
+    - "Many community GGUFs; pick one built with a recent llama.cpp release."
+  good_for: "cheap specialist; first real LoRA target"
   status: verified
   checked: 2026-11-24
   sources:
@@ -208,6 +232,11 @@
   vram_infer: 14
   tags: [reasoning, tool-use]
   notes: "Ships MXFP4 weights. Check your trainer's MXFP4/MoE support."
+  tooling: {transformers: yes, mlx: yes, llamacpp: yes, vllm: yes, sglang: '?'}
+  gotchas:
+    - "Weights ship in MXFP4; your trainer must handle MXFP4/MoE."
+    - "Uses OpenAI's harmony chat format; SFT data must follow it."
+  good_for: "reasoning and tool use at low active compute"
   status: partial
   checked: 2026-11-24
   sources: []
@@ -246,6 +275,11 @@
   vram_infer: 17
   tags: [superseded]
   notes: "Superseded by Qwen3.6/3.8-27B; keep for base-model work if needed."
+  tooling: {transformers: yes, mlx: partial, llamacpp: yes, vllm: '?', sglang: '?'}
+  gotchas:
+    - "Thinking mode is on by default (<think>…</think>); turn it off in the chat template for plain SFT."
+    - "Hybrid Gated DeltaNet layers: early mlx-lm versions failed with 'model type qwen3_5 not supported'; use a recent mlx-lm."
+    - "Many community GGUFs; pick one built with a recent llama.cpp release."
   status: verified
   checked: 2026-11-24
   sources:
@@ -265,6 +299,10 @@
   vram_lora: null
   vram_infer: 17
   tags: [coding, agentic]
+  tooling: {transformers: yes, mlx: '?', llamacpp: '?', vllm: '?', sglang: '?'}
+  gotchas:
+    - "Same hybrid family as Qwen3.5: check mlx-lm / llama.cpp versions before converting."
+  good_for: "coding and agentic work"
   status: verified
   checked: 2026-11-24
   sources:
@@ -284,6 +322,10 @@
   vram_infer: 17
   tags: [coding, agentic, teacher]
   notes: "Official repo exists. Release date and license not yet confirmed from first-party source."
+  tooling: {transformers: yes, mlx: '?', llamacpp: '?', vllm: '?', sglang: '?'}
+  gotchas:
+    - "Same hybrid family as Qwen3.5: check mlx-lm / llama.cpp versions before converting."
+  good_for: "coding, agentic work, teacher"
   status: partial
   checked: 2026-11-24
   sources:
@@ -304,6 +346,8 @@
   vram_infer: 20
   tags: [agentic, local-first]
   notes: "First Meta open-weights model under Apache 2.0 (not Llama license). Includes ~1.8B vision encoder. Verify exact HF repo id."
+  tooling: {transformers: '?', mlx: '?', llamacpp: '?', vllm: '?', sglang: '?'}
+  good_for: "local agent in a 24–32 GB envelope"
   status: verified
   checked: 2026-11-24
   sources:
@@ -363,6 +407,10 @@
   vram_infer: 21
   tags: [agentic, coding, teacher, base-available]
   notes: "LlamaForCausalLM architecture, so standard tooling works. Positioned as teacher for a planned Nanbeige4.3-3B. Benchmarks are self-reported."
+  tooling: {transformers: yes, mlx: likely, llamacpp: likely, vllm: likely, sglang: likely}
+  gotchas:
+    - "Llama architecture, so mainstream tools should work; not yet verified here."
+  good_for: "agentic coding; teacher for small models"
   status: verified
   checked: 2026-11-24
   sources:
@@ -384,6 +432,12 @@
   vram_lora: null
   vram_infer: 21
   tags: [fast-inference, base-available]
+  tooling: {transformers: yes, mlx: partial, llamacpp: yes, vllm: '?', sglang: '?'}
+  gotchas:
+    - "Thinking mode is on by default (<think>…</think>); turn it off in the chat template for plain SFT."
+    - "Hybrid Gated DeltaNet layers: early mlx-lm versions failed with 'model type qwen3_5 not supported'; use a recent mlx-lm."
+    - "Many community GGUFs; pick one built with a recent llama.cpp release."
+  good_for: "fast inference at 3B active; teacher on the Mac"
   status: verified
   checked: 2026-11-24
   sources:

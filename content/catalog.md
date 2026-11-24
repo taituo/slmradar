@@ -8,6 +8,12 @@ order: 4
 
 <div data-viz="catalog"></div>
 
+## Runtime support
+
+Which tools can load each model today. New architectures (looped, hybrid) often need forks or PR branches for weeks after release.
+
+<div data-viz="tooling"></div>
+
 ## Fit matrix
 
 The same models against each memory budget. Cells show the best adapter method that fits. Darker means more headroom.
@@ -21,6 +27,12 @@ The same models against each memory budget. Cells show the best adapter method t
 ## Model notes
 
 <div data-viz="notes"></div>
+
+## Below 3B
+
+Outside the catalog's range, but handy for edge devices and very fast iteration.
+
+<div data-viz="edge"></div>
 
 ## How to read the numbers
 

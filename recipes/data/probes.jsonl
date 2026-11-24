@@ -1,0 +1,4 @@
+{"id": "fmt-1", "kind": "target", "messages": [{"role": "user", "content": "Summarize: Deploy rolled back because the health check path returned 404."}]}
+{"id": "fmt-2", "kind": "target", "messages": [{"role": "user", "content": "Summarize: Memory grows 200 MB per hour in the worker; heap dump shows cached images."}]}
+{"id": "keep-1", "kind": "must-not-break", "messages": [{"role": "user", "content": "What is 17 * 23?"}]}
+{"id": "keep-2", "kind": "must-not-break", "messages": [{"role": "user", "content": "Write a haiku-free, two-sentence description of a lighthouse."}]}

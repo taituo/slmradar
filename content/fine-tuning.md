@@ -28,6 +28,12 @@ Base models are replaced every few months. Spend on things that survive a base-m
 4. Add RLVR only where a reward is automatic.
 5. Version adapter + dataset + probes together. Run heavier evals only when something goes to real use.
 
+## Data
+
+<div data-diagram="sft"></div>
+
+Starter data and scripts: [Recipes](recipes.html).
+
 ## Tooling
 
 Unsloth (memory-efficient LoRA/QLoRA), Hugging Face TRL + PEFT (SFT/DPO/GRPO), Axolotl (config-driven), torchtune (plain PyTorch), SkyRL / verl / OpenRLHF (RL at scale).

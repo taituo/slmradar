@@ -28,6 +28,8 @@ order: 5
 | Trainable tokens | Selected token embeddings | Very low |
 | GaLore | Low-rank *gradient* projection (full-rank weights) | Medium |
 
+<div data-diagram="peft"></div>
+
 <div data-diagram="lora"></div>
 
 Most of these live in Hugging Face PEFT. On the Mac, `mlx-lm` covers LoRA, DoRA and full fine-tuning.

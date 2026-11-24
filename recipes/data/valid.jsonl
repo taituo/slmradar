@@ -1,0 +1,3 @@
+{"messages": [{"role": "user", "content": "Summarize: The build failed because the lockfile was stale."}, {"role": "assistant", "content": "Build failed: stale lockfile. Fix: regenerate the lockfile and rebuild."}]}
+{"messages": [{"role": "user", "content": "Summarize: Tests time out on CI but pass locally; CI runners have 2 CPUs."}, {"role": "assistant", "content": "CI timeouts: runners have only 2 CPUs. Fix: raise the timeout or shard the tests."}]}
+{"messages": [{"role": "user", "content": "Summarize: Login breaks after the session cookie domain was changed to the apex domain."}, {"role": "assistant", "content": "Login broken: cookie domain changed to apex. Fix: restore the subdomain cookie or migrate sessions."}]}
