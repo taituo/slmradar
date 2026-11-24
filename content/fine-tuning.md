@@ -18,6 +18,8 @@ Base models are replaced every few months. Spend on things that survive a base-m
 | Direct weight editing / steering | Research | Small models (3–7B), OLMo for traceability |
 | General-assistant SFT | **Don't** | Next base model will beat it |
 
+<div data-diagram="memory"></div>
+
 ## Minimum loop
 
 1. Write ~20 probe prompts and save the base model's answers.

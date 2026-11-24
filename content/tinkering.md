@@ -12,6 +12,8 @@ order: 3
 
 ## The toolbox
 
+Each technique has a picture on the [Explained](explained.html) page.
+
 | Technique | What you touch | Effort | Try it on |
 |---|---|---|---|
 | LoRA / DoRA SFT | Low-rank adapters | Low | Anything: style, format, tool-call shape |
@@ -35,13 +37,25 @@ You don't need a benchmark suite:
 ## Experiments worth an evening
 
 ### Steer, then bake
+
+<div data-diagram="steering" data-caption="false"></div>
+
 Find a style direction with activation steering. Then turn it into a weight edit (ablation or addition) and compare it with a LoRA that learned the same thing.
 
 ### Turn the loop dial
+
+<div data-diagram="looped" data-caption="false"></div>
+
 On Nanbeige4.2-3B, run the shared stack 1, 2 or 3 times and see what changes in reasoning and in output.
 
 ### Merge arithmetic
+
+<div data-diagram="merging" data-caption="false"></div>
+
 Add a task-A LoRA and a task-B LoRA together. What does each one contribute, and where do they interfere?
 
 ### Checkpoint archaeology
+
+<div data-diagram="rome" data-caption="false"></div>
+
 On OLMo 3 7B, diff the weights across intermediate checkpoints for one capability you care about.

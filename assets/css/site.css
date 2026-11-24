@@ -56,7 +56,7 @@ a:hover { text-decoration-color: var(--fg); }
 .brand { font-weight: 650; letter-spacing: -.01em; text-decoration: none; display: flex; align-items: center; gap: .5rem; white-space: nowrap; }
 .brand-dot { width: 10px; height: 10px; border-radius: 50%; background: conic-gradient(from 90deg, #7aa2c8, #9bc1a5, #c8a98f, #7aa2c8); }
 .nav { display: flex; gap: .15rem; overflow-x: auto; scrollbar-width: none; flex: 1; }
-.nav a { text-decoration: none; font-size: .875rem; color: var(--muted-fg); padding: .3rem .6rem; border-radius: 8px; white-space: nowrap; }
+.nav a { text-decoration: none; font-size: .84rem; color: var(--muted-fg); padding: .3rem .45rem; border-radius: 8px; white-space: nowrap; }
 .nav a:hover { color: var(--fg); background: var(--muted); }
 .nav a[aria-current] { color: var(--fg); background: var(--muted); font-weight: 550; }
 .icon-btn { border: 1px solid var(--border); background: var(--card); color: var(--fg); border-radius: 8px; width: 34px; height: 34px; cursor: pointer; font-size: 1rem; }
@@ -178,3 +178,70 @@ section.block table { margin: 1rem 0; }
   .block.span { grid-column: 1 / -1; }
   .article { padding: 2rem 1.6rem 2.5rem; }
 }
+
+/* ---------- technique diagrams ---------- */
+.diagram { margin: 1rem 0 1.2rem; }
+.dg-title { font-weight: 600; font-size: .95rem; margin: 0 0 .5rem; color: var(--text-primary); }
+.dg-cap { font-size: .9rem; color: var(--muted-fg); line-height: 1.55; margin: .6rem 0 0; }
+svg.dg { display: block; width: 100%; height: auto; background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 6px; }
+.dg .b { fill: var(--muted); stroke: var(--ring); stroke-width: 1; }
+.dg .b2 { fill: color-mix(in srgb, var(--text-muted) 45%, var(--muted)); stroke: none; }
+.dg .b.ghost { fill: none; stroke-dasharray: 4 4; }
+.dg .f { fill: var(--series-1); stroke: none; }
+.dg .f.soft { fill: var(--series-1); opacity: .22; }
+.dg .f2 { fill: var(--seq-2); stroke: none; }
+.dg .g { stroke: var(--grid); stroke-width: 1; }
+.dg text { font: 12px var(--font); }
+.dg .t { fill: var(--text-secondary); }
+.dg .tb { fill: var(--text-primary); font-weight: 600; }
+.dg .tw { fill: #fff; font-weight: 600; }
+.dg .tw2 { fill: rgba(255,255,255,.8); font-size: 11px; }
+.dg .op { fill: var(--text-muted); font-size: 22px; }
+.dg .ln { stroke: var(--text-muted); stroke-width: 1.5; fill: none; }
+.dg .ln.thick, .dg .la.thick { stroke-width: 2.5; }
+.dg .ln.faint { opacity: .4; }
+.dg .ln.dash { stroke-dasharray: 4 4; }
+.dg .la { stroke: var(--series-1); stroke-width: 2; fill: none; }
+.dg .ah { fill: var(--text-muted); } .dg .ah-a { fill: var(--series-1); }
+.dg .dt { fill: var(--series-1); stroke: var(--surface-1); stroke-width: 2; }
+.dg .dt2 { fill: var(--text-muted); stroke: var(--surface-1); stroke-width: 2; }
+.dg .flow { stroke-dasharray: 6 5; animation: dgflow 1.1s linear infinite; }
+@keyframes dgflow { to { stroke-dashoffset: -22; } }
+@media (prefers-reduced-motion: reduce) { .dg .flow { animation: none; } }
+.legend-key { display: flex; gap: 1.2rem; font-size: .85rem; color: var(--muted-fg); align-items: center; flex-wrap: wrap; }
+.legend-key i { display: inline-block; width: 14px; height: 14px; border-radius: 4px; margin-right: .4rem; vertical-align: -2px; }
+
+/* ---------- look modes: solid (default) · glass · pure ---------- */
+:root[data-look="glass"] .sheet { background: color-mix(in srgb, var(--bg) 38%, transparent); border-color: rgba(255,255,255,.14); }
+:root[data-look="glass"] section.block,
+:root[data-look="glass"] .card,
+:root[data-look="glass"] .table-wrap,
+:root[data-look="glass"] .viz,
+:root[data-look="glass"] svg.dg,
+:root[data-look="glass"] pre,
+:root[data-look="glass"] .article table {
+  background: color-mix(in srgb, var(--card) 45%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3); backdrop-filter: blur(16px) saturate(1.3);
+  border-color: rgba(255,255,255,.16); }
+:root[data-look="glass"] section.block .viz,
+:root[data-look="glass"] section.block svg.dg,
+:root[data-look="glass"] section.block pre,
+:root[data-look="glass"] section.block .table-wrap,
+:root[data-look="glass"] section.block table { background: color-mix(in srgb, var(--card) 30%, transparent); -webkit-backdrop-filter: none; backdrop-filter: none; }
+:root[data-look="glass"] .article th { background: color-mix(in srgb, var(--muted) 45%, transparent); }
+:root[data-look="glass"] .topbar { background: color-mix(in srgb, var(--bg) 40%, transparent); }
+
+:root[data-look="pure"] .sheet { background: color-mix(in srgb, var(--bg) 93%, transparent); box-shadow: none; border-color: transparent; }
+:root[data-look="pure"] section.block,
+:root[data-look="pure"] .card,
+:root[data-look="pure"] .viz,
+:root[data-look="pure"] svg.dg,
+:root[data-look="pure"] .table-wrap,
+:root[data-look="pure"] .article table { background: transparent; border-color: transparent; box-shadow: none; }
+:root[data-look="pure"] section.block { padding-left: .2rem; padding-right: .2rem; }
+:root[data-look="pure"] .viz { padding-left: 0; padding-right: 0; }
+:root[data-look="pure"] .article th { background: transparent; border-bottom: 1px solid var(--border); }
+:root[data-look="pure"] .card { border-left: 2px solid var(--border); border-radius: 0; padding: .2rem 0 .2rem 1rem; }
+:root[data-look="pure"] .columns { gap: 2.2rem 3rem; }
+.look-toggle { width: auto !important; padding: 0 .6rem; font-size: .8rem !important; }
+section.block > h2:first-child + .diagram > .dg-title { display: none; }

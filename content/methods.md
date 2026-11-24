@@ -28,6 +28,8 @@ order: 5
 | Trainable tokens | Selected token embeddings | Very low |
 | GaLore | Low-rank *gradient* projection (full-rank weights) | Medium |
 
+<div data-diagram="lora"></div>
+
 Most of these live in Hugging Face PEFT. On the Mac, `mlx-lm` covers LoRA, DoRA and full fine-tuning.
 
 ## 2. What drives the change
@@ -45,6 +47,8 @@ PPO, GRPO, Dr. GRPO, DAPO, GSPO, REINFORCE(++), RLOO. The umbrella terms are RLH
 Continued pretraining (CPT), domain- and task-adaptive pretraining (DAPT/TAPT), language adaptation, continual learning, knowledge distillation and self-distillation, synthetic data, curriculum learning, multi-task learning, contrastive tuning.
 
 ## 3. Changes without classic training
+
+<div data-diagram="merging" data-caption="false"></div>
 
 | Method | Purpose |
 |---|---|

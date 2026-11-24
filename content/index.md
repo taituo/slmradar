@@ -31,6 +31,7 @@ The main question for every model here is *where can I actually change it?* The 
 <div class="cards" markdown="0">
   <a class="card" href="mac-local.html"><div class="v">Local Mac</div><div class="d">48 GB M5 Pro: memory budget, MLX loop, what fits.</div></a>
   <a class="card" href="tinkering.html"><div class="v">Tinkering</div><div class="d">LoRA, merging, steering, layer surgery, weight edits.</div></a>
+  <a class="card" href="explained.html"><div class="v">Explained</div><div class="d">One diagram per technique: LoRA, steering, merging, GRPO and more.</div></a>
   <a class="card" href="methods.html"><div class="v">Methods</div><div class="d">Every fine-tuning and modification method, by family.</div></a>
   <a class="card" href="catalog.html"><div class="v">Catalog</div><div class="d">Sortable table, fit matrix and release timeline.</div></a>
   <a class="card" href="hardware.html"><div class="v">Hardware</div><div class="d">NVIDIA 12–32 GB cards and cloud GPUs.</div></a>

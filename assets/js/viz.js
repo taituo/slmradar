@@ -285,6 +285,17 @@
       document.documentElement.dataset.theme = next;
       try { localStorage.setItem('slm-theme', next); } catch (e) {}
     });
+    const LOOKS = ['solid', 'glass', 'pure'], lt = document.querySelector('.look-toggle');
+    if (lt) {
+      const cur = () => document.documentElement.dataset.look || 'solid';
+      lt.textContent = cur();
+      lt.addEventListener('click', () => {
+        const next = LOOKS[(LOOKS.indexOf(cur()) + 1) % LOOKS.length];
+        if (next === 'solid') delete document.documentElement.dataset.look; else document.documentElement.dataset.look = next;
+        lt.textContent = next;
+        try { localStorage.setItem('slm-look', next); } catch (e) {}
+      });
+    }
     const rr = document.querySelector('.reroll');
     rr && rr.addEventListener('click', () => document.dispatchEvent(new Event('slm-reroll')));
   }

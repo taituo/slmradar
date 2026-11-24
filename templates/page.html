@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{title}} · slmradar</title>
 <meta name="description" content="{{sub}}">
-<script>try{var t=localStorage.getItem('slm-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+<script>try{var t=localStorage.getItem('slm-theme');if(t)document.documentElement.dataset.theme=t;var l=localStorage.getItem('slm-look');if(l)document.documentElement.dataset.look=l;}catch(e){}</script>
 <link rel="stylesheet" href="assets/css/site.css">
 <script src="assets/data.js"></script>
 <script src="assets/js/grain.js" defer></script>
 <script src="assets/js/viz.js" defer></script>
+<script src="assets/js/diagrams.js" defer></script>
 </head>
 <body>
 <canvas class="grain grain-bg" data-res="0.6" aria-hidden="true"></canvas>
@@ -17,6 +18,7 @@
   <div class="topbar-inner">
     <a class="brand" href="index.html"><span class="brand-dot"></span>slmradar</a>
     <nav class="nav">{{nav}}</nav>
+    <button class="icon-btn look-toggle" type="button" aria-label="Switch look: solid, glass, pure" title="Look: solid / glass / pure">solid</button>
     <button class="icon-btn reroll" type="button" aria-label="New background palette" title="New palette">↻</button>
     <button class="icon-btn theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle theme">☾</button>
   </div>
