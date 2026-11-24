@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}} · slmradar</title>
+<meta name="description" content="{{sub}}">
+<script>try{var t=localStorage.getItem('slm-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+<link rel="stylesheet" href="assets/css/site.css">
+<script src="assets/data.js"></script>
+<script src="assets/js/grain.js" defer></script>
+<script src="assets/js/viz.js" defer></script>
+</head>
+<body>
+<canvas class="grain grain-bg" data-res="0.6" aria-hidden="true"></canvas>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="index.html"><span class="brand-dot"></span>slmradar</a>
+    <nav class="nav">{{nav}}</nav>
+    <button class="icon-btn reroll" type="button" aria-label="New background palette" title="New palette">↻</button>
+    <button class="icon-btn theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle theme">☾</button>
+  </div>
+</header>
+
+<section class="{{hero_class}}">
+  <div class="hero-text">
+    <h1>{{title}}</h1>
+    <p>{{sub}}</p>
+  </div>
+</section>
+
+<main class="sheet"><div class="article">
+  {{content}}
+</div></main>
+
+<footer class="footer">
+  <div>Maintained by <a href="https://github.com/taituo/slmradar">taituo/slmradar</a> · built {{built}}</div>
+  <div>VRAM numbers are planning estimates. Always verify licenses on the model card. ↻ in the top bar picks a new background palette.</div>
+</footer>
+</body>
+</html>

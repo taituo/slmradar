@@ -91,7 +91,9 @@ void main(){
       gl.uniform1f(U('uScale'), rnd(.8, 1.3));
     }
     reroll();
-    cv.addEventListener('click', () => { reroll(); if (still) draw(0); });
+    const again = () => { reroll(); if (still) draw(0); };
+    cv.addEventListener('click', again);
+    document.addEventListener('slm-reroll', again);
     cv.title = 'Click for a new palette';
 
     const t0 = rnd(0, 1e5);
@@ -99,7 +101,7 @@ void main(){
     new IntersectionObserver(e => { visible = e[0].isIntersecting; }).observe(cv);
 
     function draw(now) {
-      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      const dpr = cv.dataset.res ? parseFloat(cv.dataset.res) : Math.min(window.devicePixelRatio || 1, 1.5);
       const w = Math.round(cv.clientWidth * dpr), h = Math.round(cv.clientHeight * dpr);
       if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
       gl.viewport(0, 0, w, h);

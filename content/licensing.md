@@ -1,9 +1,9 @@
 ---
 title: Licensing
-nav_order: 8
+order: 10
+sub: Weight licenses vs. training-data rights.
 ---
 
-{% include grain_hero.html title="Licensing" sub="Weights vs. training data" height=150 %}
 
 Two separate questions:
 

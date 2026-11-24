@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate docs/_data/models.yml. Usage: python3 scripts/validate.py"""
+"""Validate data/models.yml. Usage: python3 scripts/validate.py"""
 import sys
 from pathlib import Path
 
@@ -12,7 +12,7 @@ STATUS = {"verified", "partial"}
 
 
 def main() -> int:
-    models = yaml.safe_load((ROOT / "docs/_data/models.yml").read_text())
+    models = yaml.safe_load((ROOT / "data/models.yml").read_text())
     errors, seen = [], set()
     for i, m in enumerate(models):
         tag = m.get("id", f"#{i}")
@@ -31,7 +31,7 @@ def main() -> int:
             errors.append(f"{tag}: params_total {p}B outside 3–35B scope")
         if m.get("status") == "verified" and not m.get("sources"):
             errors.append(f"{tag}: verified entries need at least one source")
-    yaml.safe_load((ROOT / "docs/_data/watchlist.yml").read_text())
+    yaml.safe_load((ROOT / "data/watchlist.yml").read_text())
     for e in errors:
         print("ERROR", e)
     print(f"{len(models)} models, {len(errors)} errors")

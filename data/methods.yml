@@ -1,0 +1,51 @@
+# Editorial effort/payoff estimates (1–5) for a solo tinkerer. Drives the quadrant chart.
+- name: LoRA SFT
+  effort: 1.5
+  payoff: 4.5
+  local: true
+  what: "Teach format, tool-call shape, style. The default first move."
+- name: Adapter merge
+  effort: 1.2
+  payoff: 2.8
+  local: true
+  what: "Add or blend LoRAs trained on the same base."
+- name: Model merging
+  effort: 2
+  payoff: 3.2
+  local: true
+  what: "SLERP / TIES / DARE / task arithmetic on whole weights."
+- name: Steering
+  effort: 2.4
+  payoff: 3.6
+  local: true
+  what: "Add a direction to the residual stream at inference."
+- name: Direction ablation
+  effort: 3
+  payoff: 3.3
+  local: true
+  what: "Bake a direction into (or out of) the weights."
+- name: Layer surgery
+  effort: 3.3
+  payoff: 2.3
+  local: true
+  what: "Drop, duplicate, reorder or re-loop layers."
+- name: DPO / KTO
+  effort: 3.1
+  payoff: 3.0
+  local: true
+  what: "Preferences from chosen/rejected pairs."
+- name: GRPO / RLVR
+  effort: 4
+  payoff: 4.3
+  local: false
+  what: "Reinforcement learning with an automatic reward."
+- name: Weight edits
+  effort: 4.4
+  payoff: 2.6
+  local: true
+  what: "ROME-style or LLM-written patches to a few tensors."
+- name: Continued pretrain
+  effort: 4.6
+  payoff: 2.2
+  local: false
+  what: "New language or domain from a Base checkpoint."

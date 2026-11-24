@@ -1,11 +1,11 @@
 ---
 title: Fine-tuning
-nav_order: 6
+order: 6
+sub: Which methods are worth the effort, and the minimum loop.
 ---
 
-{% include grain_hero.html title="Fine-tuning" sub="Which methods are worth the effort" height=150 %}
-
 Base models are replaced every few months. Spend on things that survive a base-model swap: **data, evals, environments**. Weights are a cheap, re-runnable output.
+{: .lead}
 
 | Method | Verdict | When |
 |---|---|---|

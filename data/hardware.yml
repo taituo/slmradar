@@ -1,0 +1,26 @@
+# Memory budgets for the "Memory per device" chart.
+- name: RTX 3060 / 4070
+  gb: 12
+  kind: consumer NVIDIA
+- name: RTX 4080 / 5080
+  gb: 16
+  kind: consumer NVIDIA
+- name: RTX 3090 / 4090
+  gb: 24
+  kind: consumer NVIDIA
+- name: RTX 5090
+  gb: 32
+  kind: consumer NVIDIA
+- name: MacBook M5 Pro
+  gb: 48
+  usable: 36
+  kind: unified memory; GPU wired limit ~75% by default, raisable via sysctl
+- name: L40S (AWS g6e)
+  gb: 48
+  kind: cloud
+- name: H100
+  gb: 80
+  kind: cloud
+- name: H200
+  gb: 141
+  kind: cloud

@@ -1,11 +1,13 @@
 ---
-title: Hardware (NVIDIA / cloud)
-nav_order: 5
+title: Hardware
+order: 7
+sub: "NVIDIA 12–32 GB cards and cloud GPUs: what fits where."
 ---
 
-{% include grain_hero.html title="Hardware" sub="12–32 GB cards and cloud GPUs" height=150 %}
-
 Planning estimates for **adapter training at seq 2–4K, batch 1, gradient checkpointing** (Unsloth/TRL-style). Long context, bigger batches and RL rollouts all need more. Measure before buying.
+{: .lead}
+
+<div data-viz="fit-matrix"></div>
 
 ## Rules of thumb
 
@@ -30,6 +32,8 @@ MoE models: count **total** params for memory, active params for speed.
 Notes:
 - Blackwell consumer cards (50-series) need recent CUDA/PyTorch builds.
 - 2× 24 GB cards help for inference (tensor parallel) more than for single-GPU QLoRA tooling.
+
+<div data-viz="budgets"></div>
 
 ## Cloud
 
