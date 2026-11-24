@@ -24,6 +24,26 @@ def front_matter(text):
     return (yaml.safe_load(m.group(1)) or {}, m.group(2)) if m else ({}, text)
 
 
+def columnize(html):
+    """Split article HTML at <h2> into section cards. Charts, card grids and
+    wide tables span both columns; other sections flow as columns."""
+    parts = re.split(r"(?=<h2[ >])", html)
+    out = []
+    for i, part in enumerate(parts):
+        if not part.strip():
+            continue
+        if i == 0 and not part.lstrip().startswith("<h2"):
+            out.append(f'<div class="block intro span">{part}</div>')
+            continue
+        heads = re.findall(r"<thead>(.*?)</thead>", part, re.S)
+        widest = max((h.count("<th") for h in heads), default=0)
+        code = re.findall(r"<pre>(.*?)</pre>", part, re.S)
+        long_code = any(len(l) > 75 for c in code for l in c.splitlines())
+        wide = long_code or "data-viz" in part or 'class="cards"' in part or widest >= 4 or len(part) > 2600
+        out.append(f'<section class="block{" span" if wide else ""}">{part}</section>')
+    return '<div class="columns">' + "".join(out) + "</div>"
+
+
 def load_data():
     data = {}
     for f in sorted((ROOT / "data").glob("*.yml")):
@@ -53,6 +73,8 @@ def main():
         md = markdown.Markdown(extensions=["tables", "fenced_code", "attr_list", "md_in_html", "toc"],
                                extension_configs={"toc": {"permalink": "#", "toc_depth": "2-3"}})
         html = md.convert(body)
+        if meta.get("columns", True):
+            html = columnize(html)
         nav = "".join(
             f'<a href="{"index" if s == "index" else s}.html"{" aria-current=page" if s == slug else ""}>'
             f'{escape(m.get("nav", m["title"]))}</a>'

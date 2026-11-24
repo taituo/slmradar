@@ -161,3 +161,20 @@ a.card:hover { border-color: var(--ring); transform: translateY(-1px); }
 
 .footer a { color: #fff; }
 .table-wrap.plain td { white-space: normal; }
+
+/* columns: each h2 section is a card; wide content spans both columns */
+.columns { display: grid; grid-template-columns: 1fr; gap: 1.1rem; align-items: start; }
+.block { min-width: 0; }
+.block > * { max-width: none !important; margin-left: 0 !important; margin-right: 0 !important; }
+.block > h2:first-child { margin-top: 0; }
+.block.intro > p.lead:first-child { margin-top: 0; }
+section.block { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 1.3rem 1.4rem .6rem; }
+section.block > :last-child { margin-bottom: .8rem; }
+section.block .viz, section.block .table-wrap, section.block .cards { margin-top: 1rem; margin-bottom: 1rem; }
+section.block .viz { background: var(--surface-1); }
+section.block table { margin: 1rem 0; }
+@media (min-width: 1000px) {
+  .columns { grid-template-columns: 1fr 1fr; }
+  .block.span { grid-column: 1 / -1; }
+  .article { padding: 2rem 1.6rem 2.5rem; }
+}
