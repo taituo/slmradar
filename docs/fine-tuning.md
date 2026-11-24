@@ -1,6 +1,6 @@
 ---
 title: Fine-tuning
-nav_order: 4
+nav_order: 6
 ---
 
 # Which fine-tuning is worth it
@@ -20,11 +20,11 @@ Base models are replaced every few months. Spend on things that survive a base-m
 
 ## Minimum loop
 
-1. Baseline eval on **your** tasks (before any training).
-2. LoRA + SFT on a 3–9B model (fits 12–16 GB).
-3. Add RLVR only where a reward is automatic.
-4. Re-eval: gains, regressions, latency, cost.
-5. Version adapter + dataset + eval together.
+1. Write ~20 probe prompts and save the base model's answers.
+2. LoRA + SFT on a 3–9B model, locally on the [Mac](mac-local.html) or on a 12–16 GB card.
+3. Diff the probe answers and read them. Iterate.
+4. Add RLVR only where a reward is automatic.
+5. Version adapter + dataset + probes together. Run heavier evals only when something goes to real use.
 
 ## Tooling
 

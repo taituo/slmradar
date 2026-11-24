@@ -1,6 +1,6 @@
 ---
-title: Hardware
-nav_order: 3
+title: Hardware (NVIDIA / cloud)
+nav_order: 5
 ---
 
 # Hardware

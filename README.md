@@ -1,6 +1,6 @@
 # slmradar
 
-Curated catalog of **open-weight models (3B–35B)** that are realistic to fine-tune and serve on **cloud GPUs** or **12–32 GB NVIDIA cards**.
+Curated catalog of **open-weight models (3B–35B)** for hands-on tuning and modification, primarily on a **48 GB M5 Pro MacBook (MLX)**, then on **12–32 GB NVIDIA cards** or **cloud GPUs**.
 
 📖 Docs: https://taituo.github.io/slmradar/
 

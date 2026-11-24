@@ -1,19 +1,20 @@
 ---
 title: Catalog
-nav_order: 2
+nav_order: 4
 ---
 
 # Catalog
 
 Generated from [`docs/_data/models.yml`](https://github.com/taituo/slmradar/blob/main/docs/_data/models.yml). Edit the YAML, not this page.
 
+**Mac 48 GB**: ✓✓ = fast local LoRA iteration, ✓ = fine for short runs, "slow / infer" = fits 4-bit but use it for inference/merging (see [Local Mac](mac-local.html)).
 VRAM columns are rough GB estimates — see [Hardware](hardware.html) for assumptions. `—` = needs more than 32 GB or not estimated (use cloud).
 
 <table>
   <thead>
     <tr>
       <th>Model</th><th>Params</th><th>Arch</th><th>Modalities</th><th>Context</th><th>License</th><th>Released</th>
-      <th>QLoRA</th><th>LoRA bf16</th><th>Infer 4-bit</th><th>Status</th>
+      <th>Mac 48 GB</th><th>QLoRA</th><th>LoRA bf16</th><th>Infer 4-bit</th><th>Status</th>
     </tr>
   </thead>
   <tbody>
@@ -26,6 +27,7 @@ VRAM columns are rough GB estimates — see [Hardware](hardware.html) for assump
       <td>{{ m.context | default: "?" }}</td>
       <td>{{ m.license }}</td>
       <td>{{ m.released | default: "?" }}</td>
+      <td>{% if m.vram_qlora and m.vram_qlora <= 14 %}train ✓✓{% elsif m.vram_qlora and m.vram_qlora <= 20 %}train ✓{% elsif m.vram_qlora and m.vram_qlora <= 34 %}slow / infer{% else %}—{% endif %}</td>
       <td>{% if m.vram_qlora %}{{ m.vram_qlora }}{% else %}—{% endif %}</td>
       <td>{% if m.vram_lora and m.vram_lora <= 32 %}{{ m.vram_lora }}{% else %}—{% endif %}</td>
       <td>{% if m.vram_infer %}{{ m.vram_infer }}{% else %}—{% endif %}</td>

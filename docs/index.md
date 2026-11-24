@@ -5,10 +5,13 @@ nav_order: 1
 
 # slmradar
 
-A maintained radar of **open-weight models in the 3B–35B range** that are realistic to fine-tune and serve yourself:
+A maintained radar of **open-weight models in the 3B–35B range** that are realistic to **tune and modify yourself**. The focus is the hands-on experience of changing models, not benchmarking.
 
-- in the **cloud** (L40S / H100 / H200 / B200), or
-- on **12–32 GB NVIDIA cards** (RTX 3060 12 GB … RTX 5090 32 GB).
+Where it runs, in priority order:
+
+1. **Local: MacBook M5 Pro, 48 GB** (MLX). The main workbench.
+2. **12–32 GB NVIDIA cards** (RTX 3060 12 GB … RTX 5090 32 GB).
+3. **Cloud** (L40S / H100 / H200 / B200) for long or large runs.
 
 ## Selection rules
 
@@ -20,8 +23,10 @@ A maintained radar of **open-weight models in the 3B–35B range** that are real
 
 | Page | What |
 |---|---|
+| [Local Mac](mac-local.html) | M5 Pro 48 GB: what fits, MLX-LM loop |
+| [Tinkering](tinkering.html) | LoRA, merging, steering, layer surgery, weight edits |
 | [Catalog](catalog.html) | The model table (generated from `docs/_data/models.yml`) |
-| [Hardware](hardware.html) | What fits on 12 / 16 / 24 / 32 GB and in the cloud |
+| [Hardware](hardware.html) | NVIDIA 12 / 16 / 24 / 32 GB and cloud |
 | [Fine-tuning](fine-tuning.html) | Which methods are actually worth it |
 | [Inference](inference.html) | Serving stack options |
 | [Licensing](licensing.html) | Weight licenses vs. teacher-data restrictions |
